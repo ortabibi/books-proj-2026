@@ -23,8 +23,8 @@ export function BookFilter({ filterBy, setFilterBy }) {
         <input
             type="number"
             name="price"
-            placeholder="speed"
+            placeholder="price"
             onChange={handleChange}
-            value={filterByToEdit.minSpeed || ''} />
+            value={filterByToEdit.price || ''} />
     </form>
 }
