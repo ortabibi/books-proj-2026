@@ -14,7 +14,14 @@ export function BookDetails({ selectedBook, onCloseDetails }) {
         if (amount < 20) return 'green'
         return ''
     }
-    
+
+    function getPageCount(pageCount) {
+        if (pageCount > 500) return 'Serious Reading'
+        if (pageCount < 500 && pageCount > 200) return 'Descent Reading'
+        if (pageCount < 100) return 'Light Reading'
+        return ''
+    }
+
 
     function getPublishedText(publishedDate) {
         const currentYear = new Date().getFullYear()
@@ -30,12 +37,16 @@ export function BookDetails({ selectedBook, onCloseDetails }) {
         <h2>{selectedBook && selectedBook.title}</h2>
 
         <p className={selectedBook ? getPriceClass(selectedBook.listPrice.amount) : ''}
-        >{selectedBook && selectedBook.listPrice.amount}
+        >price: {selectedBook && selectedBook.listPrice.amount}
         </p>
-        
+
         <p> publishedDate: {selectedBook && selectedBook.publishedDate}{' '}
-              {selectedBook ? getPublishedText(selectedBook.publishedDate) : ''}</p>
-        <p>{selectedBook && selectedBook.pageCount}</p>
+            {selectedBook ? getPublishedText(selectedBook.publishedDate) : ''}
+        </p>
+
+        <p>pageCount: {selectedBook && selectedBook.pageCount}
+            {' '} {selectedBook ? getPageCount(selectedBook.pageCount) : ''}
+        </p>
 
         <button onClick={onCloseDetails}>x</button>
     </dialog>
