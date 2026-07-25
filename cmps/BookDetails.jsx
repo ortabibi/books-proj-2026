@@ -14,6 +14,7 @@ export function BookDetails({ selectedBook, onCloseDetails }) {
         if (amount < 20) return 'green'
         return ''
     }
+    
 
     function getPublishedText(publishedDate) {
         const currentYear = new Date().getFullYear()
