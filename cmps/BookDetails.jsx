@@ -15,13 +15,25 @@ export function BookDetails({ selectedBook, onCloseDetails }) {
         return ''
     }
 
+    function getPublishedText(publishedDate) {
+        const currentYear = new Date().getFullYear()
+        const yearsAgo = currentYear - publishedDate
+
+        if (yearsAgo > 10) return 'Vintage'
+        if (yearsAgo < 1) return 'New'
+        return ''
+    }
+
     return <dialog onClose={onCloseDetails} ref={dialogRef} closedby="any" className="book-details">
         <img src={selectedBook && selectedBook.thumbnail} alt="" />
         <h2>{selectedBook && selectedBook.title}</h2>
+
         <p className={selectedBook ? getPriceClass(selectedBook.listPrice.amount) : ''}
         >{selectedBook && selectedBook.listPrice.amount}
         </p>
-        <p>{selectedBook && selectedBook.publishedDate}</p>
+        
+        <p> publishedDate: {selectedBook && selectedBook.publishedDate}{' '}
+              {selectedBook ? getPublishedText(selectedBook.publishedDate) : ''}</p>
         <p>{selectedBook && selectedBook.pageCount}</p>
 
         <button onClick={onCloseDetails}>x</button>
