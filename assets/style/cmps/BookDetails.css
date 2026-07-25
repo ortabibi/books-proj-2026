@@ -5,3 +5,7 @@
 .green{
     color: green;
 }
+
+.book-details h2{
+    margin: 24px auto;
+}
