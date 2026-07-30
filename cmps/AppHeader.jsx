@@ -13,6 +13,11 @@ export function AppHeader({ page = 'home', onSetPage }) {
                     onClick={(ev) => onSetPage('About')}>
                     About
                 </a>
+                <span> | </span>
+                <a href="#" className={(page === 'BookIndex') ? 'active' : ''}
+                    onClick={(ev) => onSetPage('BookIndex')}>
+                    books
+                </a>
             </nav>
         </section>
     </header>
