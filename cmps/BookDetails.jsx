@@ -1,13 +1,32 @@
-const { useEffect, useRef } = React
+const { useEffect, useRef, useState } = React
+const { useParams } = ReactRouter
+const { Link } = ReactRouterDOM
 
-export function BookDetails({ selectedBook, onCloseDetails }) {
+import { Loader } from '../cmps/Loader.jsx'
+import { bookService } from '../services/book.service.js'
+
+export function BookDetails() {
+    const [book, setBook] = useState()
+    const [isLoading, setIsLoading] = useState(true)
+
+    const { id: bookId } = useParams()
 
     const dialogRef = useRef()
 
     useEffect(() => {
-        if (selectedBook) dialogRef.current.showModal()
+        if (!dialogRef.current) return
+        if (book) dialogRef.current.showModal()
         else dialogRef.current.close()
-    }, [selectedBook])
+    }, [book])
+
+    useEffect(() => {
+        setIsLoading(true)
+
+        bookService.get(bookId)
+            .then(book => setBook(book))
+            .catch(err => console.log(err))
+            .finally(() => setIsLoading(false))
+    }, [bookId])
 
     function getPriceClass(amount) {
         if (amount > 150) return 'red'
@@ -24,19 +43,21 @@ export function BookDetails({ selectedBook, onCloseDetails }) {
         return ''
     }
 
-    return <dialog onClose={onCloseDetails} ref={dialogRef} closedby="any" className="book-details">
-        <img src={selectedBook && selectedBook.thumbnail} alt="" />
-        <h2>{selectedBook && selectedBook.title}</h2>
+    if (!book || isLoading) return <Loader />
 
-        <p className={selectedBook ? getPriceClass(selectedBook.listPrice.amount) : ''}
-        >{selectedBook && selectedBook.listPrice.amount}
+
+    return <dialog ref={dialogRef} closedby="any" className="book-details">
+        <img src={book.thumbnail} alt="" />
+        <h2>{book.title}</h2>
+
+        <p className={getPriceClass(book.listPrice.amount)}
+        >{book.listPrice.amount}
         </p>
-        
-        <p> publishedDate: {selectedBook && selectedBook.publishedDate}{' '}
-              {selectedBook ? getPublishedText(selectedBook.publishedDate) : ''}</p>
-        <p>{selectedBook && selectedBook.pageCount}</p>
 
-        <button onClick={onCloseDetails}>x</button>
+        <p> publishedDate: {book.publishedDate}{' '}
+            {book.publishedDate}</p>
+        <p>{book.pageCount}</p>
+
+        <Link to="/book"><button>x</button></Link>
     </dialog>
-
 }

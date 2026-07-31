@@ -10,7 +10,6 @@ export function BookIndex() {
 
     const [books, setBooks] = useState([])
     const [filterBy, setFilterBy] = useState(bookService.getDefaultFilter())
-    const [selectedBook, setSelectedBook] = useState(null)
 
 
     useEffect(() => {
@@ -19,7 +18,7 @@ export function BookIndex() {
 
 
     function loadBooks() {
-        return bookService.query(filterBy)
+        bookService.query(filterBy)
             .then(books => setBooks(books))
     }
 
@@ -48,9 +47,6 @@ export function BookIndex() {
             onSetSelectedBook={onSetSelectedBook}
         />
 
-        <BookDetails
-            selectedBook={selectedBook}
-            onCloseDetails={() => setSelectedBook(null)} />
     </section>
 
 }

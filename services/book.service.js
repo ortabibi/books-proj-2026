@@ -1,4 +1,4 @@
-import { utilService} from './util.service.js'
+import { utilService } from './util.service.js'
 import { storageService } from './async-storage.service.js'
 
 const BOOK_KEY = 'bookDB'
@@ -31,10 +31,7 @@ function query(filterBy = {}) {
 
 function get(carId) {
     return storageService.get(BOOK_KEY, carId)
-        .then(car => {
-            car = _setNextPrevCarId(car)
-            return car
-        })
+        .then(car => _setNextPrevBookId(car))
 }
 
 function remove(carId) {
@@ -96,3 +93,15 @@ function getEmptyCar(vendor = '', maxSpeed = '') {
 function getDefaultFilter(filterBy = { txt: '', price: 0 }) {
     return { txt: filterBy.txt, price: filterBy.price }
 }
+
+function _setNextPrevBookId(book) {
+    return storageService.query(BOOK_KEY).then((books) => {
+        const bookIdx = books.findIndex((currCar) => currCar.id === book.id)
+        const nextBook = books[bookIdx + 1] ? books[bookIdx + 1] : books[0]
+        const prevBook = books[bookIdx - 1] ? books[bookIdx - 1] : books[books.length - 1]
+        book.nextBookId = nextBook.id
+        book.prevBookId = prevBook.id
+        return book
+    })
+}
+

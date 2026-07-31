@@ -4,7 +4,8 @@ import { AppHeader } from "./cmps/AppHeader.jsx"
 import { Home } from "./pages/Home.jsx"
 import { About } from "./pages/About.jsx"
 import { BookIndex } from "./pages/BookIndex.jsx"
-import { BookDetails } from './pages/BookDetails.jsx'
+import { BookDetails } from './cmps/BookDetails.jsx'
+import { CarEdit } from './cmps/CarEdit.jsx'
 
 
 export function RootCmp() {
@@ -19,6 +20,7 @@ export function RootCmp() {
                         <Route path="/" element={<Home />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/book" element={<BookIndex />} />
+                        <Route path="/book/edit" element={<CarEdit />} />
                         <Route path="/book/:id" element={<BookDetails />} />
                     </Routes>
                 </main>
