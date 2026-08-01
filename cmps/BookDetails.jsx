@@ -4,6 +4,7 @@ const { Link } = ReactRouterDOM
 
 import { Loader } from '../cmps/Loader.jsx'
 import { bookService } from '../services/book.service.js'
+import { AddReview } from '../cmps/AddReview.jsx'
 
 export function BookDetails() {
     const [book, setBook] = useState()
@@ -54,9 +55,11 @@ export function BookDetails() {
         >{book.listPrice.amount}
         </p>
 
-        <p> publishedDate: {book.publishedDate}{' '}
-            {book.publishedDate}</p>
-        <p>{book.pageCount}</p>
+        <p> publishedDate: {book.publishedDate}</p>
+
+        <p>pageCount: {book.pageCount}</p>
+
+        < AddReview bookId ={book.id} />
 
         <Link to="/book"><button>x</button></Link>
     </dialog>

@@ -9,7 +9,7 @@ export const bookService = {
     get,
     remove,
     save,
-    getEmptyCar,
+    getEmptyBook,
     getDefaultFilter,
 }
 
@@ -55,7 +55,7 @@ function _createBooks() {
     if (!books || !books.length) {
 
         books = []
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 2; i++) {
             const book = {
                 id: utilService.makeId(),
                 title: utilService.makeLorem(2),
@@ -85,10 +85,16 @@ function _createBooks() {
 
 
 
-function getEmptyCar(vendor = '', maxSpeed = '') {
-    return { vendor, maxSpeed }
+function getEmptyBook(title = '', amount = 0) {
+    return {
+        title,
+        listPrice: {
+            amount,
+            currencyCode: 'EUR',
+            isOnSale: false
+        }
+    }
 }
-
 
 function getDefaultFilter(filterBy = { txt: '', price: 0 }) {
     return { txt: filterBy.txt, price: filterBy.price }
