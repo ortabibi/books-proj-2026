@@ -11,6 +11,9 @@ export const bookService = {
     save,
     getEmptyBook,
     getDefaultFilter,
+    getEmptyReview,
+    saveReview,
+    deleteReview
 }
 
 function query(filterBy = {}) {
@@ -29,21 +32,30 @@ function query(filterBy = {}) {
         })
 }
 
-function get(carId) {
-    return storageService.get(BOOK_KEY, carId)
+function get(bookId) {
+    return storageService.get(BOOK_KEY, bookId)
         .then(car => _setNextPrevBookId(car))
 }
 
-function remove(carId) {
-    return storageService.remove(BOOK_KEY, carId)
+function remove(bookId) {
+    return storageService.remove(BOOK_KEY, bookId)
 }
 
-function save(car) {
-    if (car.id) {
-        return storageService.put(BOOK_KEY, car)
+function save(book) {
+    if (book.id) {
+        return storageService.put(BOOK_KEY, book)
     } else {
-        return storageService.post(BOOK_KEY, car)
+        return storageService.post(BOOK_KEY, book)
     }
+}
+
+function saveReview(bookId, review) {
+    return storageService.get(BOOK_KEY, bookId)
+        .then(book => {
+            review.id = utilService.makeId()
+            book.reviews.push(review)
+            return storageService.put(BOOK_KEY, book)
+        })
 }
 
 
@@ -73,7 +85,8 @@ function _createBooks() {
                     amount: utilService.getRandomIntInclusive(80, 500),
                     currencyCode: "EUR",
                     isOnSale: Math.random() > 0.7
-                }
+                },
+                reviews: _createDemoReviews()
             }
             books.push(book)
         }
@@ -111,3 +124,46 @@ function _setNextPrevBookId(book) {
     })
 }
 
+function _createDemoReviews() {
+    const reviews = []
+
+    const REVIEWER_NAMES = [
+        'John Smith',
+        'Emma Johnson',
+        'Michael Brown',
+        'Sarah Davis',
+        'David Wilson',
+        'Emily Taylor',
+        'James Anderson',
+        'Olivia Martinez',
+        'Daniel Thomas',
+        'Sophia Garcia'
+    ]
+
+    for (let i = 0; i < 3; i++) {
+        const year = utilService.getRandomIntInclusive(2015, 2024)
+        const month = utilService.getRandomIntInclusive(1, 12)
+        const day = utilService.getRandomIntInclusive(1, 28)
+
+        const review = {
+            id: utilService.makeId(),
+            fullName: REVIEWER_NAMES[utilService.getRandomIntInclusive(0, 9)],
+            rating: utilService.getRandomIntInclusive(1, 5),
+            readAt: `${year}-${utilService.padNum(month)}-${utilService.padNum(day)}`
+        }
+        reviews.push(review)
+    }
+    return reviews
+}
+
+function getEmptyReview(fullName = '', rating = '', readAt = '') {
+    return { fullName, rating, readAt }
+}
+
+function deleteReview(bookId, reviewId) {
+    return storageService.get(BOOK_KEY, bookId)
+        .then(book => {
+            book.reviews = book.reviews.filter(review => review.id !== reviewId)
+            return storageService.put(BOOK_KEY, book)
+        })
+}

@@ -15,4 +15,5 @@
 @import "cmps/BookPreview.css";
 @import "cmps/BookFilter.css";
 @import "cmps/BookDetails.css";
-@import "cmps/bookEdit.css";
+@import "cmps/BookEdit.css";
+@import "cmps/AddReview.css";

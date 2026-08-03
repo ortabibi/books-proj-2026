@@ -1,18 +1,38 @@
-const { useState } = React
+const { useState, useEffect } = React
 
-export function AddReview({ bookId }) {
+const { Link } = ReactRouterDOM
+const { useParams, useNavigate } = ReactRouter
 
-    const [review, setReview] = useState({ fullname: '', rating: '', readAt: '' })
+import { bookService } from '../services/book.service.js'
+import { showSuccessMsg } from '../services/event-bus.service.js'
+import { utilService } from '../services/util.service.js'
+
+export function AddReview() {
+    const [review, setReview] = useState(bookService.getEmptyReview())
+
+    const navigate = useNavigate()
+    const { id: bookId } = useParams()
+
 
     function handleChange({ target }) {
+        const { value, type, name } = target
+        setReview(prev => ({ ...prev, [name]: type === 'number' ? +value : value }))
     }
 
+    function onSaveBook(ev) {
+        ev.preventDefault()
 
+        bookService.saveReview(bookId, review)
+            .then(review => {
+                showSuccessMsg('review saved')
+                navigate(`/book/${bookId}`)
+            })
+    }
 
-    return <form action="">
+    return <form onSubmit={onSaveBook} className='add-review'>
         <label htmlFor="fullName">fullName</label>
         <input
-            value={review.fullname}
+            value={review.fullName}
             onChange={handleChange}
             id="fullName"
             name="fullName"
@@ -43,5 +63,13 @@ export function AddReview({ bookId }) {
             type="date"
             placeholder="readAt"
         />
+
+        <div>
+            <button>Save</button>
+            <Link to={`/book/${bookId}`}><button type="button" >Cancel</button></Link>
+        </div>
+
     </form >
+
+
 }

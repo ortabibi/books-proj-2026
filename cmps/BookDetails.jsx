@@ -44,6 +44,16 @@ export function BookDetails() {
         return ''
     }
 
+    function onDeleteReview(reviewId) {
+        bookService.deleteReview(bookId, reviewId)
+            .then(() => {
+                setBook(prev => ({
+                    ...prev,
+                    reviews: prev.reviews.filter(review => review.id !== reviewId)
+                }))
+            })
+    }
+
     if (!book || isLoading) return <Loader />
 
 
@@ -59,8 +69,29 @@ export function BookDetails() {
 
         <p>pageCount: {book.pageCount}</p>
 
-        < AddReview bookId ={book.id} />
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Rating</th>
+                    <th>Read At</th>
+                    <th><Link to={`/book/${book.id}/review`}><button>add review</button></Link></th>
+                </tr>
+            </thead>
+            <tbody>
+                {book.reviews.map(review => (
+                    <tr key={review.id}>
+                        <td>{review.fullName}</td>
+                        <td>{review.rating}</td>
+                        <td>{review.readAt}</td>
+                        <td onClick={() => onDeleteReview(review.id)}><button>x</button></td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+
 
         <Link to="/book"><button>x</button></Link>
+
     </dialog>
 }
