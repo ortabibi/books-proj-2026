@@ -1,0 +1,21 @@
+.add-review {
+    display: grid;
+    gap: .5em;
+
+    width: fit-content;
+
+    padding: 1em;
+    background-color: rgb(228, 174, 75);
+    margin: 100px auto;
+}
+
+.add-review input {
+    grid-column: 2;
+}
+
+.badd-review div {
+    display: flex;
+    gap: 1em;
+    grid-column: 2;
+    justify-self: end;
+}

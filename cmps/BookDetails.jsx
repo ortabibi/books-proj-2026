@@ -1,13 +1,35 @@
-const { useEffect, useRef } = React
+const { useEffect, useRef, useState } = React
+const { useParams, useNavigate } = ReactRouter
+const { Link } = ReactRouterDOM
 
-export function BookDetails({ selectedBook, onCloseDetails }) {
+import { Loader } from '../cmps/Loader.jsx'
+import { bookService } from '../services/book.service.js'
+import { AddReview } from '../cmps/AddReview.jsx'
+
+export function BookDetails() {
+    const [book, setBook] = useState()
+    const [isLoading, setIsLoading] = useState(true)
+
+    const { id: bookId } = useParams()
+    const navigate = useNavigate()
+
 
     const dialogRef = useRef()
 
     useEffect(() => {
-        if (selectedBook) dialogRef.current.showModal()
+        if (!dialogRef.current) return
+        if (book) dialogRef.current.showModal()
         else dialogRef.current.close()
-    }, [selectedBook])
+    }, [book])
+
+    useEffect(() => {
+        setIsLoading(true)
+
+        bookService.get(bookId)
+            .then(book => setBook(book))
+            .catch(err => console.log(err))
+            .finally(() => setIsLoading(false))
+    }, [bookId])
 
     function getPriceClass(amount) {
         if (amount > 150) return 'red'
@@ -24,19 +46,61 @@ export function BookDetails({ selectedBook, onCloseDetails }) {
         return ''
     }
 
-    return <dialog onClose={onCloseDetails} ref={dialogRef} closedby="any" className="book-details">
-        <img src={selectedBook && selectedBook.thumbnail} alt="" />
-        <h2>{selectedBook && selectedBook.title}</h2>
+    function onDeleteReview(reviewId) {
+        bookService.deleteReview(bookId, reviewId)
+            .then(() => {
+                setBook(prev => ({
+                    ...prev,
+                    reviews: prev.reviews.filter(review => review.id !== reviewId)
+                }))
+            })
+    }
 
-        <p className={selectedBook ? getPriceClass(selectedBook.listPrice.amount) : ''}
-        >{selectedBook && selectedBook.listPrice.amount}
+    if (!book || isLoading) return <Loader />
+
+
+    return <dialog ref={dialogRef} closedby="any" className="book-details">
+        <img src={book.thumbnail} alt="" />
+        <h2>{book.title}</h2>
+
+        <p className={getPriceClass(book.listPrice.amount)}
+        >{book.listPrice.amount}
         </p>
-        
-        <p> publishedDate: {selectedBook && selectedBook.publishedDate}{' '}
-              {selectedBook ? getPublishedText(selectedBook.publishedDate) : ''}</p>
-        <p>{selectedBook && selectedBook.pageCount}</p>
 
-        <button onClick={onCloseDetails}>x</button>
+        <p> publishedDate: {book.publishedDate}</p>
+
+        <p>pageCount: {book.pageCount}</p>
+
+        <div className="actions">
+            <Link to={`/book/${book.prevBookId}`} ><button>Prev</button></Link>
+            <Link to={`/book/${book.nextBookId}`} ><button>Next</button></Link>
+            <button onClick={() => navigate('/book')}>Back</button>
+        </div>
+
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Rating</th>
+                    <th>Read At</th>
+                    <th><Link to={`/book/${book.id}/review`}><button>add review</button></Link></th>
+                </tr>
+            </thead>
+            <tbody>
+                {book.reviews && book.reviews.map(review => (
+                    <tr key={review.id}>
+                        <td>{review.fullName}</td>
+                        <td>{review.rating}</td>
+                        <td>{review.readAt}</td>
+                        <td onClick={() => onDeleteReview(review.id)}><button>x</button></td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+
+
+        <Link to="/book"><button>x</button></Link>
+
     </dialog>
-
 }

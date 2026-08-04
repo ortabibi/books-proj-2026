@@ -6,7 +6,8 @@ export const utilService = {
     getRandomIntInclusive,
     getDayName,
     getMonthName,
-    animateCSS
+    animateCSS,
+    padNum
 }
 
 function makeId(length = 6) {
@@ -71,4 +72,8 @@ function animateCSS(el, animation='bounce') {
 
         el.addEventListener('animationend', handleAnimationEnd, { once: true })
     })
+}
+
+function padNum(num) {
+    return num > 9 ? num + '' : '0' + num
 }
