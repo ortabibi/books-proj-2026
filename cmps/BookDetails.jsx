@@ -1,5 +1,5 @@
 const { useEffect, useRef, useState } = React
-const { useParams } = ReactRouter
+const { useParams, useNavigate } = ReactRouter
 const { Link } = ReactRouterDOM
 
 import { Loader } from '../cmps/Loader.jsx'
@@ -11,6 +11,8 @@ export function BookDetails() {
     const [isLoading, setIsLoading] = useState(true)
 
     const { id: bookId } = useParams()
+    const navigate = useNavigate()
+
 
     const dialogRef = useRef()
 
@@ -69,6 +71,13 @@ export function BookDetails() {
 
         <p>pageCount: {book.pageCount}</p>
 
+        <div className="actions">
+            <Link to={`/book/${book.prevBookId}`} ><button>Prev</button></Link>
+            <Link to={`/book/${book.nextBookId}`} ><button>Next</button></Link>
+            <button onClick={() => navigate('/book')}>Back</button>
+        </div>
+
+
         <table>
             <thead>
                 <tr>
@@ -79,7 +88,7 @@ export function BookDetails() {
                 </tr>
             </thead>
             <tbody>
-                {book.reviews.map(review => (
+                {book.reviews && book.reviews.map(review => (
                     <tr key={review.id}>
                         <td>{review.fullName}</td>
                         <td>{review.rating}</td>
