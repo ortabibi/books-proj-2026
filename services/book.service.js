@@ -100,12 +100,21 @@ function _createBooks() {
 
 function getEmptyBook(title = '', amount = 0) {
     return {
-        title,
+        title: '',
+        subtitle: '',
+        authors: [],
+        publishedDate: 1900,
+        description: '',
+        pageCount: 0,
+        categories: [],
+        thumbnail: `http://coding-academy.org/books-photos/20.jpg`,
+        language: 'en',
         listPrice: {
-            amount,
+            amount: 0,
             currencyCode: 'EUR',
-            isOnSale: false
-        }
+            isOnSale: false,
+        },
+        reviews: []
     }
 }
 
