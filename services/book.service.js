@@ -13,7 +13,8 @@ export const bookService = {
     getDefaultFilter,
     getEmptyReview,
     saveReview,
-    deleteReview
+    deleteReview,
+    getFilterFromSearchParams
 }
 
 function query(filterBy = {}) {
@@ -31,6 +32,17 @@ function query(filterBy = {}) {
             return books
         })
 }
+
+function getFilterFromSearchParams(searchParams) {
+    const defaultFilter = getDefaultFilter()
+    const filterBy = {}
+
+    for (const field in defaultFilter) {
+        filterBy[field] = searchParams.get(field) || ''
+    }
+    return filterBy
+}
+
 
 function get(bookId) {
     return storageService.get(BOOK_KEY, bookId)

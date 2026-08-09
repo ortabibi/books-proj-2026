@@ -1,5 +1,6 @@
 /* Setup */
 @import "setup/vars.css";
+@import 'setup/typography.css';
 
 /* Base */
 @import "base/reset.css";
@@ -17,3 +18,4 @@
 @import "cmps/BookDetails.css";
 @import "cmps/BookEdit.css";
 @import "cmps/AddReview.css";
+@import "cmps/StarRating.css";
